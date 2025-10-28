@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>post-an-article</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffff;
+            color: #3498db;
+            min-height: 100vh;
+        }
+
+        h1, h2 {
+            color: #2980b9;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .glass-box {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border-radius: 25px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(52, 152, 219, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-box:hover {
+            box-shadow: 0 8px 32px rgba(52, 152, 219, 0.2);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-btn {
+            font-size: 24px;
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-btn:hover {
+            color: #2980b9;
+            transform: scale(1.1);
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #3498db;
+            color: #3498db;
+        }
+
+        .btn-outline:hover {
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .btn-active {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn-solid {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.1);
+        }
+
+        .btn-solid:hover {
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 15px;
+            color: #3498db;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #7fb3d5;
+        }
+
+        .search-bar {
+            margin-bottom: 30px;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .article-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-card img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .article-card h3 {
+            margin-bottom: 10px;
+            color: #2980b9;
+        }
+
+        .article-card p {
+            margin-bottom: 15px;
+            color: #3498db;
+            line-height: 1.5;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+
+        .rating {
+            margin-bottom: 15px;
+        }
+
+        .star {
+            font-size: 20px;
+            color: #bdc3c7;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star:hover {
+            color: #f39c12;
+        }
+
+        .star.active {
+            color: #f39c12;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            transition: left 0.3s ease;
+            z-index: 1000;
+            border-right: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .side-menu.active {
+            left: 0;
+        }
+
+        .menu-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu-close:hover {
+            color: #2980b9;
+            transform: scale(1.1);
+        }
+
+        .menu-links {
+            margin-top: 40px;
+        }
+
+        .menu-link {
+            display: block;
+            padding: 15px 0;
+            color: #3498db;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(52, 152, 219, 0.2);
+            transition: color 0.3s;
+        }
+
+        .menu-link:hover {
+            color: #2980b9;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: none;
+            z-index: 1001;
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+
+        .modal.active {
+            display: block;
+        }
+
+        .modal-close {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            z-index: 1002;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+        }
+
+        .modal-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-content h2 {
+            color: #2980b9;
+            margin-bottom: 15px;
+        }
+
+        .modal-content .category-badge {
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            line-height: 1.7;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+            color: #3498db;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .article-excerpt {
+            color: #3498db;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .html-note {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            font-size: 14px;
+            color: #3498db;
+        }
+
+        .article-html-content {
+            line-height: 1.7;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+
+        .article-html-content h1,
+        .article-html-content h2,
+        .article-html-content h3,
+        .article-html-content h4,
+        .article-html-content h5,
+        .article-html-content h6 {
+            color: #2980b9;
+            margin: 20px 0 10px 0;
+        }
+
+        .article-html-content p {
+            margin-bottom: 15px;
+        }
+
+        .article-html-content ul,
+        .article-html-content ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        .article-html-content li {
+            margin-bottom: 5px;
+        }
+
+        .article-html-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            margin: 15px 0;
+            font-style: italic;
+            color: #3498db;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 10px 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .article-html-content code {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #e74c3c;
+        }
+
+        .article-html-content pre {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .html-example {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #3498db;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #3498db;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #3498db;
+        }
+
+        .empty-state h3 {
+            color: #2980b9;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Side Menu -->
+    <div class="side-menu" id="side-menu">
+        <button class="menu-close" id="menu-close">&times;</button>
+        <h2>Menu</h2>
+        <div class="menu-links">
+            <a href="#" class="menu-link" data-page="home">Home</a>
+            <a href="#" class="menu-link" data-page="profile">User Profile</a>
+            <a href="#" class="menu-link" data-page="upload">Post Article</a>
+        </div>
+    </div>
+
+    <!-- Overlay for menu -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <button class="menu-btn" id="menu-btn">&#9776;</button>
+            <h1>post-an-article</h1>
+            <div style="width: 40px;"></div> <!-- Spacer for alignment -->
+        </div>
+
+        <!-- Home Page -->
+        <div id="home-page" class="page active">
+            <!-- Search and Filters -->
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search articles...">
+            </div>
+
+            <div class="filters">
+                <button class="btn btn-active" data-filter="all">All</button>
+                <button class="btn btn-outline" data-filter="Anime Characters">Anime Characters</button>
+                <button class="btn btn-outline" data-filter="Singers">Singers</button>
+                <button class="btn btn-outline" data-filter="Movies">Movies</button>
+                <button class="btn btn-outline" data-filter="TV Shows">TV Shows</button>
+                <button class="btn btn-outline" data-filter="Video Games">Video Games</button>
+                <button class="btn btn-outline" data-filter="Books">Books</button>
+                <button class="btn btn-outline" data-filter="Celebrities">Celebrities</button>
+                <button class="btn btn-outline" data-filter="Technology">Technology</button>
+                <button class="btn btn-outline" data-filter="Travel">Travel</button>
+                <button class="btn btn-outline" data-filter="Food">Food</button>
+            </div>
+
+            <!-- Articles Grid -->
+            <div id="articles-grid" class="articles-grid">
+                <div class="loading">Loading articles...</div>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profile-page" class="page">
+            <div class="form-container glass-box">
+                <h2>User Profile</h2>
+                <form id="profile-form">
+                    <input type="text" id="profile-name" placeholder="Your Name" required>
+                    <input type="email" id="profile-email" placeholder="Your Email" required>
+                    <button type="submit" class="btn btn-solid">Save Profile</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Upload Page -->
+        <div id="upload-page" class="page">
+            <div class="form-container glass-box">
+                <h2>Post Article</h2>
+                <form id="upload-form">
+                    <textarea id="content" placeholder="Paste your HTML code here..." rows="10" required></textarea>
+                    <input type="text" id="article-title" placeholder="Article Title" required>
+                    <input type="url" id="image-url" placeholder="Image URL" >
+                    <select id="article-category" required>
+                        <option value="">Select Category</option>
+                        <option value="Anime Characters">Anime Characters</option>
+                        <option value="Singers">Singers</option>
+                        <option value="Movies">Movies</option>
+                        <option value="TV Shows">TV Shows</option>
+                        <option value="Video Games">Video Games</option>
+                        <option value="Books">Books</option>
+                        <option value="Celebrities">Celebrities</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Travel">Travel</option>
+                        <option value="Food">Food</option>
+                    </select>
+                    <div class="html-note">
+                        <strong>HTML Content Support:</strong> Paste your HTML code directly in the content field above. The code will be rendered when users read your article.
+                        <div class="html-example">
+                            Example: &lt;h3&gt;My Article&lt;/h3&gt;&lt;p&gt;This is my article content.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;List item 1&lt;/li&gt;&lt;li&gt;List item 2&lt;/li&gt;&lt;/ul&gt;
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-solid">Submit for Review</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for reading articles -->
+    <div class="modal" id="read-modal">
+        <button class="modal-close" id="modal-close">&times;</button>
+        <div class="modal-content">
+            <!-- Article content will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBkBUxnlyfhe6PtrBgHZ7E_g5eHxJZCLBo",
+            authDomain: "post-an-article-2d075.firebaseapp.com",
+            databaseURL: "https://post-an-article-2d075-default-rtdb.firebaseio.com",
+            projectId: "post-an-article-2d075",
+            storageBucket: "post-an-article-2d075.firebasestorage.app",
+            messagingSenderId: "978475567063",
+            appId: "1:978475567063:web:efb828f08a2452f3dc2d92"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // DOM Elements
+        const menuBtn = document.getElementById('menu-btn');
+        const menuClose = document.getElementById('menu-close');
+        const sideMenu = document.getElementById('side-menu');
+        const overlay = document.getElementById('overlay');
+        const pages = document.querySelectorAll('.page');
+        const menuLinks = document.querySelectorAll('.menu-link');
+        const profileForm = document.getElementById('profile-form');
+        const uploadForm = document.getElementById('upload-form');
+        const articlesGrid = document.getElementById('articles-grid');
+        const searchInput = document.getElementById('search-input');
+        const filterBtns = document.querySelectorAll('.filters .btn');
+        const readModal = document.getElementById('read-modal');
+        const modalClose = document.getElementById('modal-close');
+        const modalContent = document.querySelector('.modal-content');
+        const notification = document.getElementById('notification');
+
+        // Menu Toggle
+        menuBtn.addEventListener('click', () => {
+            sideMenu.classList.add('active');
+            overlay.classList.add('active');
+        });
+
+        menuClose.addEventListener('click', () => {
+            sideMenu.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            sideMenu.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Page Navigation
+        menuLinks.forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                const targetPage = link.getAttribute('data-page');
+                
+                // Hide all pages
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // Show target page
+                document.getElementById(`${targetPage}-page`).classList.add('active');
+                
+                // Close menu
+                sideMenu.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+        });
+
+        // Modal Close
+        modalClose.addEventListener('click', () => {
+            readModal.classList.remove('active');
+        });
+
+        // Load User Profile from localStorage
+        function loadUserProfile() {
+            const profile = JSON.parse(localStorage.getItem('neonArticleHubProfile'));
+            if (profile) {
+                document.getElementById('profile-name').value = profile.name || '';
+                document.getElementById('profile-email').value = profile.email || '';
+            }
+        }
+
+        // Save User Profile
+        profileForm.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            const name = document.getElementById('profile-name').value;
+            const email = document.getElementById('profile-email').value;
+            
+            const profile = { name, email };
+            localStorage.setItem('neonArticleHubProfile', JSON.stringify(profile));
+            
+            showNotification('Profile saved successfully!', 'success');
+        });
+
+        // Submit Article for Review
+        uploadForm.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            // Check if user has saved their profile
+            const profile = JSON.parse(localStorage.getItem('neonArticleHubProfile'));
+            if (!profile || !profile.name || !profile.email) {
+                showNotification('Please save your profile information first!', 'error');
+                document.getElementById('profile-page').classList.add('active');
+                document.getElementById('upload-page').classList.remove('active');
+                return;
+            }
+            
+            const content = document.getElementById('content').value;
+            const title = document.getElementById('article-title').value;
+            const imageUrl = document.getElementById('image-url').value;
+            const category = document.getElementById('article-category').value;
+            
+            const submission = {
+                content,
+                title,
+                imageUrl,
+                category,
+                submitterName: profile.name,
+                submitterEmail: profile.email,
+                submittedAt: Date.now(),
+                status: 'pending'
+            };
+            
+            // Save to Firebase
+            database.ref('pendingSubmissions').push(submission)
+                .then(() => {
+                    showNotification('Article submitted for review!', 'success');
+                    uploadForm.reset();
+                    
+                    // Return to home page
+                    document.getElementById('home-page').classList.add('active');
+                    document.getElementById('upload-page').classList.remove('active');
+                })
+                .catch(error => {
+                    showNotification('Error submitting: ' + error.message, 'error');
+                });
+        });
+
+        // Load Published Articles from Firebase
+        function loadArticles() {
+            articlesGrid.innerHTML = '<div class="loading">Loading articles...</div>';
+            
+            database.ref('articles').on('value', snapshot => {
+                articlesGrid.innerHTML = '';
+                
+                if (!snapshot.exists()) {
+                    articlesGrid.innerHTML = `
+                        <div class="empty-state">
+                            <h3>No Articles Yet</h3>
+                            <p>Be the first to post an article!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                snapshot.forEach(childSnapshot => {
+                    const article = childSnapshot.val();
+                    const articleId = childSnapshot.key;
+                    
+                    // Get rating from localStorage
+                    const userRatings = JSON.parse(localStorage.getItem('neonArticleHubRatings')) || {};
+                    const userRating = userRatings[articleId] || 0;
+                    
+                    // Get article ratings from Firebase
+                    const ratingData = article.ratings || { total: 0, count: 0 };
+                    const avgRating = ratingData.count > 0 ? (ratingData.total / ratingData.count).toFixed(1) : 'No ratings';
+                    
+                    // Create excerpt from content - strip HTML tags for the excerpt
+                    const excerpt = stripHtmlTags(article.content).substring(0, 150) + '...';
+                    
+                    const articleCard = document.createElement('div');
+                    articleCard.className = 'article-card glass-box';
+                    articleCard.setAttribute('data-category', article.category);
+                    articleCard.setAttribute('data-title', article.title.toLowerCase());
+                    
+                    articleCard.innerHTML = `
+                        <img src="${article.imageUrl}" alt="${article.title}" onerror="this.src='https://via.placeholder.com/300x180/ecf0f1/3498db?text=No+Image'">
+                        <div class="category-badge">${article.category}</div>
+                        <h3>${article.title}</h3>
+                        <p class="article-excerpt">${excerpt}</p>
+                        <div class="rating">
+                            ${generateStarRating(articleId, userRating)}
+                        </div>
+                        <p><strong>Rating:</strong> ${avgRating}</p>
+                        <button class="btn btn-solid read-btn" data-id="${articleId}">Read Article</button>
+                    `;
+                    
+                    articlesGrid.appendChild(articleCard);
+                });
+                
+                // Add event listeners to read buttons
+                document.querySelectorAll('.read-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const articleId = btn.getAttribute('data-id');
+                        readArticle(articleId);
+                    });
+                });
+                
+                // Add event listeners to rating stars
+                document.querySelectorAll('.star').forEach(star => {
+                    star.addEventListener('click', () => {
+                        const articleId = star.getAttribute('data-article');
+                        const rating = parseInt(star.getAttribute('data-rating'));
+                        rateArticle(articleId, rating);
+                    });
+                });
+            });
+        }
+
+        // Strip HTML tags for excerpt
+        function stripHtmlTags(html) {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || '';
+        }
+
+        // Generate Star Rating HTML
+        function generateStarRating(articleId, userRating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                const activeClass = i <= userRating ? 'active' : '';
+                stars += `<span class="star ${activeClass}" data-article="${articleId}" data-rating="${i}">★</span>`;
+            }
+            return stars;
+        }
+
+        // Rate an Article
+        function rateArticle(articleId, rating) {
+            // Update user's rating in localStorage
+            const userRatings = JSON.parse(localStorage.getItem('neonArticleHubRatings')) || {};
+            userRatings[articleId] = rating;
+            localStorage.setItem('neonArticleHubRatings', JSON.stringify(userRatings));
+            
+            // Update article's overall rating in Firebase
+            database.ref(`articles/${articleId}/ratings`).once('value')
+                .then(snapshot => {
+                    const ratingData = snapshot.val() || { total: 0, count: 0 };
+                    
+                    // If user already rated this article, subtract previous rating
+                    if (userRatings[articleId] !== rating) {
+                        const previousRating = userRatings[articleId] || 0;
+                        ratingData.total = ratingData.total - previousRating + rating;
+                    } else {
+                        ratingData.total += rating;
+                        ratingData.count += 1;
+                    }
+                    
+                    // Save updated rating to Firebase
+                    return database.ref(`articles/${articleId}/ratings`).set(ratingData);
+                })
+                .then(() => {
+                    // Update UI
+                    loadArticles();
+                    showNotification('Rating submitted!', 'success');
+                })
+                .catch(error => {
+                    showNotification('Error submitting rating: ' + error.message, 'error');
+                });
+        }
+
+        // Read an Article
+        function readArticle(articleId) {
+            database.ref(`articles/${articleId}`).once('value')
+                .then(snapshot => {
+                    const article = snapshot.val();
+                    
+                    // Populate modal with article content - render HTML instead of plain text
+                    modalContent.innerHTML = `
+                        <img src="${article.imageUrl}" alt="${article.title}" onerror="this.src='https://via.placeholder.com/800x400/ecf0f1/3498db?text=No+Image'">
+                        <div class="category-badge">${article.category}</div>
+                        <h2>${article.title}</h2>
+                        <div class="article-html-content">${article.content}</div>
+                    `;
+                    
+                    // Show modal
+                    readModal.classList.add('active');
+                })
+                .catch(error => {
+                    showNotification('Error loading article: ' + error.message, 'error');
+                });
+        }
+
+        // Filter Articles
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active button
+                filterBtns.forEach(b => b.classList.remove('btn-active'));
+                filterBtns.forEach(b => b.classList.add('btn-outline'));
+                btn.classList.remove('btn-outline');
+                btn.classList.add('btn-active');
+                
+                // Apply filter
+                const filter = btn.getAttribute('data-filter');
+                filterArticles(filter, searchInput.value);
+            });
+        });
+
+        // Search Articles
+        searchInput.addEventListener('input', () => {
+            const activeFilter = document.querySelector('.filters .btn-active').getAttribute('data-filter');
+            filterArticles(activeFilter, searchInput.value);
+        });
+
+        // Filter and Search Function
+        function filterArticles(categoryFilter, searchTerm) {
+            const articleCards = document.querySelectorAll('.article-card');
+            
+            articleCards.forEach(card => {
+                const articleCategory = card.getAttribute('data-category');
+                const articleTitle = card.getAttribute('data-title');
+                const matchesCategory = categoryFilter === 'all' || articleCategory === categoryFilter;
+                const matchesSearch = articleTitle.includes(searchTerm.toLowerCase());
+                
+                if (matchesCategory && matchesSearch) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Show Notification
+        function showNotification(message, type) {
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            if (type === 'error') {
+                notification.style.borderLeftColor = '#e74c3c';
+            } else {
+                notification.style.borderLeftColor = '#3498db';
+            }
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+
+        // Initialize App
+        function init() {
+            loadUserProfile();
+            loadArticles();
+        }
+
+        // Start the app
+        init();
+    </script>
+</body>
+</html>
