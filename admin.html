@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Article Hub - Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffff;
+            background-image: 
+                radial-gradient(circle at top left, rgba(100, 200, 255, 0.2), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(100, 150, 255, 0.2), transparent 30%);
+            color: #2c3e50;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .glass-box {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 25px;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(52, 152, 219, 0.1);
+        }
+
+        .auth-box {
+            max-width: 400px;
+            margin: 100px auto;
+            text-align: center;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #3498db;
+            color: #3498db;
+        }
+
+        .btn-solid {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 15px;
+            color: #2c3e50;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: 700;
+        }
+
+        .submissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .submission-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .submission-card h3 {
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+
+        .submission-card p {
+            margin-bottom: 8px;
+            color: #7f8c8d;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .card-actions button {
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .published-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .published-item {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .published-item img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #3498db;
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Authentication Section -->
+        <div id="auth-section" class="auth-box glass-box">
+            <h1>Neon Article Hub</h1>
+            <h2>Admin Login</h2>
+            <form id="login-form">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit" class="btn btn-solid">Login</button>
+            </form>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="dashboard">
+            <div class="header">
+                <h1>post-an-article - Admin Panel</h1>
+                <button id="logout-btn" class="btn btn-outline">Logout</button>
+            </div>
+
+            <div class="glass-box">
+                <h2>Add/Edit Article</h2>
+                <form id="article-form">
+                    <input type="hidden" id="article-id">
+                    <input type="hidden" id="submitter-email">
+                    <input type="hidden" id="submitter-uid">
+                    
+                    <div class="form-group">
+                        <label for="title">Article Title</label>
+                        <input type="text" id="title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Anime Characters">Anime Characters</option>
+                            <option value="Singers">Singers</option>
+                            <option value="Movies">Movies</option>
+                            <option value="TV Shows">TV Shows</option>
+                            <option value="Video Games">Video Games</option>
+                            <option value="Books">Books</option>
+                            <option value="Celebrities">Celebrities</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Food">Food</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="image-url">Image URL</label>
+                        <input type="url" id="image-url" >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="content">Article Content</label>
+                        <textarea id="content" rows="10" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-solid">Save Article</button>
+                </form>
+            </div>
+
+            <div class="glass-box">
+                <h2>Pending Submissions</h2>
+                <div id="pending-submissions" class="submissions-grid">
+                    <!-- Pending submissions will be loaded here -->
+                </div>
+            </div>
+
+            <div class="glass-box">
+                <h2>Published Articles</h2>
+                <div id="published-items" class="published-items">
+                    <!-- Published articles will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        // --- IMPORTANT: »9æ7»9æ7PASTE YOUR FIREBASE»9æ7»9æ7 CONFIGURATION HERE ---
+        const firebaseConfig = {
+  apiKey: "AIzaSyBkBUxnlyfhe6PtrBgHZ7E_g5eHxJZCLBo",
+  authDomain: "post-an-article-2d075.firebaseapp.com",
+  databaseURL: "https://post-an-article-2d075-default-rtdb.firebaseio.com",
+  projectId: "post-an-article-2d075",
+  storageBucket: "post-an-article-2d075.firebasestorage.app",
+  messagingSenderId: "978475567063",
+  appId: "1:978475567063:web:efb828f08a2452f3dc2d92"
+};
+        // --- END OF FIREBASE CONFIGURATION ---
+
+        // Initialize Firebase with a named instance
+        const adminApp = firebase.initializeApp(firebaseConfig, 'adminApp');
+        const auth = firebase.auth(adminApp);
+        const database = firebase.database(adminApp);
+
+        // DOM Elements
+        const authSection = document.getElementById('auth-section');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('login-form');
+        const logoutBtn = document.getElementById('logout-btn');
+        const articleForm = document.getElementById('article-form');
+        const pendingSubmissionsContainer = document.getElementById('pending-submissions');
+        const publishedItemsContainer = document.getElementById('published-items');
+        const notification = document.getElementById('notification');
+
+        // Authentication State Listener
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // User is signed in
+                authSection.style.display = 'none';
+                dashboard.style.display = 'block';
+                loadPendingSubmissions();
+                loadPublishedArticles();
+            } else {
+                // User is signed out
+                authSection.style.display = 'block';
+                dashboard.style.display = 'none';
+            }
+        });
+
+        // Login Form Handler
+        loginForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    showNotification('Login successful!', 'success');
+                })
+                .catch(error => {
+                    showNotification('Login failed: ' + error.message, 'error');
+                });
+        });
+
+        // Logout Handler
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut()
+                .then(() => {
+                    showNotification('Logged out successfully', 'success');
+                })
+                .catch(error => {
+                    showNotification('Logout failed: ' + error.message, 'error');
+                });
+        });
+
+        // Article Form Handler
+        articleForm.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            const articleId = document.getElementById('article-id').value;
+            const title = document.getElementById('title').value;
+            const category = document.getElementById('category').value;
+            const imageUrl = document.getElementById('image-url').value;
+            const content = document.getElementById('content').value;
+            const submitterEmail = document.getElementById('submitter-email').value;
+            const submitterUid = document.getElementById('submitter-uid').value;
+            
+            const articleData = {
+                title,
+                category,
+                imageUrl,
+                content,
+                approvedBy: auth.currentUser.email,
+                approvedAt: Date.now()
+            };
+            
+            // If we have a submitter email, this is an approval from pending submissions
+            if (submitterEmail) {
+                // Save to published articles
+                const newArticleRef = database.ref('articles').push();
+                newArticleRef.set(articleData)
+                    .then(() => {
+                        // Remove from pending submissions
+                        database.ref(`pendingSubmissions/${articleId}`).remove();
+                        
+                        // Send notification to user
+                        const sanitizedEmail = submitterEmail.replace(/[.#$[\]]/g, "_");
+                        database.ref(`notifications/${sanitizedEmail}`).push({
+                            message: `Your article "${title}" has been approved and published!`,
+                            timestamp: Date.now(),
+                            read: false
+                        });
+                        
+                        showNotification('Article approved and published!', 'success');
+                        resetForm();
+                        loadPendingSubmissions();
+                        loadPublishedArticles();
+                    })
+                    .catch(error => {
+                        showNotification('Error approving article: ' + error.message, 'error');
+                    });
+            } else {
+                // This is a new admin-created article
+                database.ref('articles').push(articleData)
+                    .then(() => {
+                        showNotification('Article created successfully!', 'success');
+                        resetForm();
+                        loadPublishedArticles();
+                    })
+                    .catch(error => {
+                        showNotification('Error creating article: ' + error.message, 'error');
+                    });
+            }
+        });
+
+        // Load Pending Submissions
+        function loadPendingSubmissions() {
+            pendingSubmissionsContainer.innerHTML = '';
+            
+            database.ref('pendingSubmissions').on('value', snapshot => {
+                pendingSubmissionsContainer.innerHTML = '';
+                
+                if (!snapshot.exists()) {
+                    pendingSubmissionsContainer.innerHTML = '<p>No pending submissions</p>';
+                    return;
+                }
+                
+                snapshot.forEach(childSnapshot => {
+                    const submission = childSnapshot.val();
+                    const submissionId = childSnapshot.key;
+                    
+                    const submissionCard = document.createElement('div');
+                    submissionCard.className = 'submission-card';
+                    submissionCard.innerHTML = `
+                        <h3>${submission.title}</h3>
+                        <div class="category-badge">${submission.category}</div>
+                        <p><strong>Submitted by:</strong> ${submission.submitterName}</p>
+                        <p><strong>Email:</strong> ${submission.submitterEmail}</p>
+                        <div class="card-actions">
+                            <button class="btn btn-solid approve-btn" data-id="${submissionId}">Approve</button>
+                            <button class="btn btn-danger reject-btn" data-id="${submissionId}">Reject</button>
+                        </div>
+                    `;
+                    
+                    pendingSubmissionsContainer.appendChild(submissionCard);
+                });
+                
+                // Add event listeners to buttons
+                document.querySelectorAll('.approve-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const submissionId = btn.getAttribute('data-id');
+                        approveSubmission(submissionId);
+                    });
+                });
+                
+                document.querySelectorAll('.reject-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const submissionId = btn.getAttribute('data-id');
+                        rejectSubmission(submissionId);
+                    });
+                });
+            });
+        }
+
+        // Load Published Articles
+        function loadPublishedArticles() {
+            publishedItemsContainer.innerHTML = '';
+            
+            database.ref('articles').on('value', snapshot => {
+                publishedItemsContainer.innerHTML = '';
+                
+                if (!snapshot.exists()) {
+                    publishedItemsContainer.innerHTML = '<p>No published articles</p>';
+                    return;
+                }
+                
+                snapshot.forEach(childSnapshot => {
+                    const article = childSnapshot.val();
+                    const articleId = childSnapshot.key;
+                    
+                    const articleCard = document.createElement('div');
+                    articleCard.className = 'published-item';
+                    articleCard.innerHTML = `
+                        <img src="${article.imageUrl}" alt="${article.title}" onerror="this.src='https://via.placeholder.com/300x150?text=No+Image'">
+                        <h3>${article.title}</h3>
+                        <div class="category-badge">${article.category}</div>
+                    `;
+                    
+                    publishedItemsContainer.appendChild(articleCard);
+                });
+            });
+        }
+
+        // Approve Submission
+        function approveSubmission(submissionId) {
+            database.ref(`pendingSubmissions/${submissionId}`).once('value')
+                .then(snapshot => {
+                    const submission = snapshot.val();
+                    
+                    // Populate the form with submission data
+                    document.getElementById('article-id').value = submissionId;
+                    document.getElementById('title').value = submission.title;
+                    document.getElementById('category').value = submission.category;
+                    document.getElementById('image-url').value = submission.imageUrl;
+                    document.getElementById('content').value = submission.content;
+                    document.getElementById('submitter-email').value = submission.submitterEmail;
+                    document.getElementById('submitter-uid').value = submission.submitterUid;
+                    
+                    showNotification('Submission data loaded. Click "Save Article" to approve.', 'success');
+                })
+                .catch(error => {
+                    showNotification('Error loading submission: ' + error.message, 'error');
+                });
+        }
+
+        // Reject Submission
+        function rejectSubmission(submissionId) {
+            if (confirm('Are you sure you want to reject this submission?')) {
+                database.ref(`pendingSubmissions/${submissionId}`).remove()
+                    .then(() => {
+                        showNotification('Submission rejected', 'success');
+                        loadPendingSubmissions();
+                    })
+                    .catch(error => {
+                        showNotification('Error rejecting submission: ' + error.message, 'error');
+                    });
+            }
+        }
+
+        // Reset Form
+        function resetForm() {
+            articleForm.reset();
+            document.getElementById('article-id').value = '';
+            document.getElementById('submitter-email').value = '';
+            document.getElementById('submitter-uid').value = '';
+        }
+
+        // Show Notification
+        function showNotification(message, type) {
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            if (type === 'error') {
+                notification.style.borderLeftColor = '#e74c3c';
+            } else {
+                notification.style.borderLeftColor = '#3498db';
+            }
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
